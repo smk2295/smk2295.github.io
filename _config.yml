@@ -52,7 +52,7 @@ instagram_username: _0.1.06.05_
 
 # About Section
 # about_title: About Me (Use this to override about section title)
-about_profile_image: images/profile.jpg
+about_profile_image: images/profile2.jpg
 about_content: | # this will include new lines to allow paragraphs
 
 
@@ -63,6 +63,25 @@ about_content: | # this will include new lines to allow paragraphs
   
 
 content:
+  - title: Education
+    layout: list
+    content:
+      - layout: top-right
+        title: Yangseo High School
+        # Institution name
+        sub_title: 
+        # Qualifications (eg. BA Performing Arts)
+        caption: 2017.03 ~ 2020.01
+        # Date Range (eg. 2016 - 2019)
+        # quote:
+          # > Short institution or course description (optional)
+        description: | # this will include new lines to allow paragraphs
+      - layout: top-right
+        title: Hanyang University Erica
+        # Institution name
+        sub_title: Military Information Engineering & Computer Science (Double Major)
+        # Qualifications (eg. BA Performing Arts)
+        caption: 2020.03 ~ ing
   - title: Projects # Title for the section
     layout: list # Type of content section (list/text)
     content:
@@ -95,25 +114,6 @@ content:
 #          Short description of the company (optional)
 #        description: | # this will include new lines to allow paragraphs
 #          Description of role
-  - title: Education
-    layout: list
-    content:
-      - layout: top-right
-        title: Yangseo High School
-        # Institution name
-        sub_title: 
-        # Qualifications (eg. BA Performing Arts)
-        caption: 2017.03 ~ 2020.01
-        # Date Range (eg. 2016 - 2019)
-        # quote:
-          # > Short institution or course description (optional)
-        description: | # this will include new lines to allow paragraphs
-      - layout: top-right
-        title: Hanyang University Erica
-        # Institution name
-        sub_title: Military Information Engineering & Computer Science (Double Major)
-        # Qualifications (eg. BA Performing Arts)
-        caption: 2020.03 ~ ing
   - title: A Little More About Me
     layout: text
     content: | # this will include new lines to allow paragraphs
