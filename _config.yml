@@ -79,16 +79,14 @@ content:
       - layout: top-right
         title: Hanyang University Erica
         # Institution name
-        sub_title: |
-        Military Information Engineering
-        Computer Science (Double Major)
+        sub_title: Military Information Engineering & Computer Science (Double Major)
         # Qualifications (eg. BA Performing Arts)
         caption: 2020.03 ~ ing
   - title: Projects # Title for the section
     layout: list # Type of content section (list/text)
     content:
       - layout: left
-        border:       # Value of `weak` will display a weak border below this item. # Any 
+        border:   # Value of `weak` will display a weak border below this item. # Any 
                       # other value (or no value) means no border will be displayed
         title: the Optimization of RIS Beam Direction for Minimizing Shaded Areas
         link: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
