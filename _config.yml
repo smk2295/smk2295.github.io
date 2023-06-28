@@ -8,7 +8,7 @@ version: 2
 
 # Personal info
 name: Song Minkyoung
-title: Your job title
+title: Developer
 email: smk2295@hanyang.ac.kr
 # email_title: Email (Email title override)
 phone: 010-2295-7969
@@ -54,6 +54,9 @@ instagram_username: _0.1.06.05_
 # about_title: About Me (Use this to override about section title)
 about_profile_image: images/profile.jpg
 about_content: | # this will include new lines to allow paragraphs
+
+
+
   **Welcome to my website!**
   
   If you have any questions, please feel free to contact me via email!:)
@@ -105,7 +108,6 @@ content:
         # quote:
           # > Short institution or course description (optional)
         description: | # this will include new lines to allow paragraphs
-          Description of qualification
       - layout: top-right
         title: Hanyang University Erica
         # Institution name
@@ -118,10 +120,7 @@ content:
       I would like to further explore and conduct research in the field of **Computer Networking** and **Data Communication**.
       
       I'm also interested in **Cybersecurity** and **Cryptography**.
-      # This is where you can write a little more about yourself. You could title this section **Interests** and include some of your other interests.
-
-      # Or you could title it **Skills** and write a bit more about things that make you more desirable, like *leadership* or *teamwork*
-
+     
 # Footer
 footer_show_references: true
 # references_title: References on request (Override references text)
