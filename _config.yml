@@ -79,7 +79,9 @@ content:
       - layout: top-right
         title: Hanyang University Erica
         # Institution name
-        sub_title: Military Information Engineering & Computer Science (Double Major)
+        sub_title: |
+        Military Information Engineering
+        Computer Science (Double Major)
         # Qualifications (eg. BA Performing Arts)
         caption: 2020.03 ~ ing
   - title: Projects # Title for the section
