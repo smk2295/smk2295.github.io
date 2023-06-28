@@ -62,7 +62,7 @@ about_content: | # this will include new lines to allow paragraphs
     - <a href="google.com">Links</a>
     - Images ![alt text](/images/landscape-trees.jpg "Trees")
 
-content:
+ content:
   - title: Projects # Title for the section
     layout: list # Type of content section (list/text)
     content:
@@ -82,7 +82,7 @@ content:
         quote: >
           Short overview of the project (optional)
         description: | # this will include new lines to allow paragraphs
-          Description about the work on/with the project
+          Description about the work on/with the project 
 #  - title: Experience
 #    layout: list
 #    content:
@@ -107,20 +107,19 @@ content:
         # Date Range (eg. 2016 - 2019)
         # quote:
           # > Short institution or course description (optional)
-        description: | # this will include new lines to allow paragraphs
+        # description: | # this will include new lines to allow paragraphs
           Description of qualification
-      - layout: top-right
-        title: Hanyang University Erica
+        title2: Hanyang University Erica
         # Institution name
-        sub_title: Military Information Engineering & Computer Science (Double Major)
+        sub_title2: Military Information Engineering & Computer Science (Double Major)
         # Qualifications (eg. BA Performing Arts)
-        caption: 2020.03 ~ ing
+        caption2 : 2020.03 ~ ing
   - title: A Little More About Me
     layout: text
-    content: | # this will include new lines to allow paragraphs
-      This is where you can write a little more about yourself. You could title this section **Interests** and include some of your other interests.
+    # content: | # this will include new lines to allow paragraphs
+    #  This is where you can write a little more about yourself. You could title this section **Interests** and include some of your other interests.
 
-      Or you could title it **Skills** and write a bit more about things that make you more desirable, like *leadership* or *teamwork*
+    #  Or you could title it **Skills** and write a bit more about things that make you more desirable, like *leadership* or *teamwork*
 
 # Footer
 footer_show_references: true
