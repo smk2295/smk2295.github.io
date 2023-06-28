@@ -1,7 +1,7 @@
 # Site
 repository: smk2295.github.io 
 # Git repository where your resume will be hosted, only required if you are hosting on GitHub (eg. sproogen/modern-resume-theme)
-favicon: images/profile.jpg
+# favicon: images/profile.jpg
 # Directory of your favicon (eg. images/favicon.ico)(optional)
 
 # Content configuration version
@@ -19,7 +19,7 @@ website:
 # website_title: Web (Website title override)
 
 # Dark Mode (true/false/never)
-darkmode: true
+darkmode: false
 
 # Social links
 # twitter_username: 
@@ -53,15 +53,15 @@ instagram_username: _0.1.06.05_
 
 # About Section
 # about_title: About Me (Use this to override about section title)
-about_profile_image: Directory of profile image (eg. images/profile.jpg)
+about_profile_image: images/profile.jpg # Directory of profile image (eg. images/profile.jpg)
 about_content: | # this will include new lines to allow paragraphs
   Write an awesome description about yourself here, this supports markdown, so you can add [links](http://foobar.com) and highlight things <mark>like this</mark>.
 
-  You can even add paragraphs by using empty lines like this and add anything else [markdown](https://www.markdownguide.org/getting-started#what-is-markdown) supports such as
-    - Lists
-    - Tables
-    - <a href="google.com">Links</a>
-    - Images ![alt text](/images/landscape-trees.jpg "Trees")
+ # You can even add paragraphs by using empty lines like this and add anything else [markdown](https://www.markdownguide.org/getting-started#what-is-markdown) supports such as
+ #   - Lists
+ #   - Tables
+ #   - <a href="google.com">Links</a>
+ #   - Images ![alt text](/images/landscape-trees.jpg "Trees")
 
  content:
   - title: Projects # Title for the section
@@ -72,8 +72,8 @@ about_content: | # this will include new lines to allow paragraphs
                       # other value (or no value) means no border will be displayed
         title: The Optimization of RIS Beam Direction for Minimizing Shaded Areas in Indoor Environment
         link: # Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
-        # link_text: Link Text
-        # additional_links:
+        link_text: Link Text
+        additional_links:
           - title:  Github page for project (eg. sproogen/modern-resume-theme)
             icon: fab fa-github
             url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
