@@ -1,7 +1,8 @@
 # Site
 repository: smk2295.github.io 
 # Git repository where your resume will be hosted, only required if you are hosting on GitHub (eg. sproogen/modern-resume-theme)
-# favicon: Directory of your favicon (eg. images/favicon.ico)(optional)
+favicon: images/profile.jpg
+# Directory of your favicon (eg. images/favicon.ico)(optional)
 
 # Content configuration version
 version: 2
