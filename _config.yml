@@ -81,7 +81,7 @@ content:
         # Institution name
         sub_title: Military Information Engineering & Computer Science (Double Major)
         # Qualifications (eg. BA Performing Arts)
-        caption: 2020.03 ~ ing
+        caption: 2020.03 ~ 2024.02
   - title: Projects # Title for the section
     layout: list # Type of content section (list/text)
     content:
