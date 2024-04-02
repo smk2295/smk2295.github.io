@@ -8,7 +8,7 @@ version: 2
 
 # Personal info
 name: Song Minkyoung
-title: Developer
+title:
 email: smk2295@hanyang.ac.kr
 # email_title: Email (Email title override)
 phone: 010-2295-7969
@@ -77,7 +77,7 @@ content:
           # > Short institution or course description (optional)
         description: | # this will include new lines to allow paragraphs
       - layout: top-right
-        title: Hanyang University Erica
+        title: Hanyang University
         # Institution name
         sub_title: Military Information Engineering & Computer Science (Double Major)
         # Qualifications (eg. BA Performing Arts)
