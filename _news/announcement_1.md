@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🎓 Graduated summa cum laude from Hanyang University Erica in Military Information Engineering and earned a dual degree in Computer Science 🎓
+🎓 Graduated *Summa Cum Laude* with a bachelor's degree in Military Information Engineering and a second bachelor's degree in Computer Science 🎓
