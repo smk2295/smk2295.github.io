@@ -2,7 +2,7 @@
 layout: about
 title: about
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
+#subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Motto. Etc.
 
 profile:
   align: right
@@ -11,11 +11,11 @@ profile:
   more_info: >
 
 news: true # includes a list of news items
-selected_papers: true # includes a list of papers marked as "selected={true}"
+selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-Hi! I’m a first-year M.S. student in Artificial Intelligence at POSTECH, advised by Prof. Namhoon Lee. 
+Hi! I’m a first-year M.S. student in Artificial Intelligence at <a href = "https://postech.ac.kr/"> POSTECH</a>, advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>. 
 
 My dream is to create a world where everyone can easily and effortlessly use ML and DL in their daily lives.
 
