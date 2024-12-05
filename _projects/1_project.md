@@ -4,7 +4,7 @@ title: Product Demand Forecasting by Store Using AI
 description: BGF Retail & Seoul National University Graduate School of Data Science
 img: assets/img/12.jpg
 importance: 1
-category: work
+category: Team Projects
 related_publications: true
 ---
 
