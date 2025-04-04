@@ -3,10 +3,11 @@ layout: page
 title: projects
 permalink: /projects/
 description: Here’s my collection of projects—simple, fun, and practical.
-nav: true
+nav: false
 nav_order: 3
 display_categories: [Team Projects, Personal Projects]
 horizontal: false
+published: false
 ---
 
 <!-- pages/projects.md -->
