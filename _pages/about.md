@@ -19,4 +19,4 @@ Hi! I’m a first-year M.S. student in Artificial Intelligence at <a href = "htt
 
 My dream is to create a world where everyone can easily and effortlessly use ML and DL in their daily lives.
 
-Feel free to reach out to me via email anytime!😊
+Feel free to reach out to me via <a href="mailto:minkyoung@postech.ac.kr"> minkyoung@postech.ac.kr </a> anytime!😊
