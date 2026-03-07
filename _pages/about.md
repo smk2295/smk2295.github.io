@@ -15,7 +15,7 @@ selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-Hi! I’m a first-year M.S. student in Artificial Intelligence at <a href = "https://postech.ac.kr/"> POSTECH</a>, advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>. 
+Hi! I’m a first-year M.S. student in Artificial Intelligence at <a href="https://postech.ac.kr/">POSTECH</a>, advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>.
 
 My dream is to create a world where everyone can easily and effortlessly use ML and DL in their daily lives.
 

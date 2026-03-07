@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🎓 Graduated *Summa Cum Laude* with a B.S. in Military Information Engineering and a second B.S. in Computer Science!😎 🎓
+🎓 Graduated _Summa Cum Laude_ with a B.S. in Military Information Engineering and a second B.S. in Computer Science!😎 🎓
