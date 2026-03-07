@@ -16,15 +16,15 @@
       year: 2025. 02 ~
       description:
         - Graduate School of Artificial Intelligence
-        - Computational Optimization Lab
-        - 'advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>'
+        - <a href="http://opt.postech.ac.kr/">Computational Optimization Lab</a>
+        - advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>
     - title: B.S.
       institution: Hanyang University
       year: 2020. 03 ~ 2024. 02
       description:
         - Department of Military Information Engineering
         - Computer Science (Double Major)
-        - "GPA: 4.26/4.5 (Summa Cum Laude)"
+        - GPA: 4.26/4.5 (Summa Cum Laude)
     - title: High School
       institution: Yangseo High School
       year: 2017. 03 ~ 2020. 02
@@ -65,7 +65,7 @@
     - year: 2025. 10
       items:
         - POSTECHian Fellowship - Diligence
-    - year: 2025. 08
+    - year: 2025. 08, 2026. 02
       items:
         - Wooseok Cultural Foundation Scholarship
     - year: 2025. 03
@@ -98,6 +98,14 @@
     - year: 2020. 08
       items:
         - 2nd Place Award - the 3rd Online Game Jam, ILLISOFT & Hanyang University
+
+- title: Teaching
+  type: time_table
+  contents:
+    - title: Teaching Assistant, POSCO AI·BigData Academy
+      year: 2026-S
+      items:
+        - Machine Learning and Deep Learning
 
 # - title: Academic Interests
 #   type: nested_list
