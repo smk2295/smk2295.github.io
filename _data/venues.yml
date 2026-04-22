@@ -7,3 +7,7 @@
 
 "Vision":
   color: "#009f36"
+
+"ACL":
+  url: https://2026.aclweb.org/
+  color: "#1f6feb"

@@ -1,10 +1,10 @@
 ---
 layout: page
 permalink: /publications/
-title: publications
+title: Publications
 description:
-nav: false
-published: false
+nav: true
+published: true
 nav_order: 2
 ---
 
