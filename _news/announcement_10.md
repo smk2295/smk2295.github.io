@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🎤 Our ACL 2026 paper "Quantifying Aleatoric Uncertainty of In-Context Learning for Robust Measure of LLM Prediction Confidence" has been selected as an **Oral Presentation**! 🎉
+🎤 Our ACL 2026 paper has been selected as an **Oral Presentation**!🤩 🎤
