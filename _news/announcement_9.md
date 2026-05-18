@@ -5,4 +5,4 @@ inline: true
 related_posts: false
 ---
 
-🎉 **One paper has been accepted to ACL 2026** 🇺🇸: "Quantifying Aleatoric Uncertainty of In-Context Learning for Robust Measure of LLM Prediction Confidence" 🎉
+🎉 **One paper has been accepted to ACL 2026** 🇺🇸: "Quantifying Aleatoric Uncertainty of In-Context Learning for Robust Measure of LLM Prediction Confidence"🥳 🎉
