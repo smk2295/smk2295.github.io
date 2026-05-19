@@ -6,7 +6,7 @@
     - name: Date of Birth
       value: 5th June, 2001
     - name: Languages
-      value: Korean(Native), English(Fluent)
+      value: Korean (Native), English (Fluent)
 
 - title: Education
   type: time_table
