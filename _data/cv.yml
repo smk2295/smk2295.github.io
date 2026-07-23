@@ -11,7 +11,7 @@
 - title: Education
   type: time_table
   contents:
-    - title: M.S
+    - title: M.S.
       institution: POSTECH
       year: 2025. 02 ~
       description:
@@ -102,7 +102,11 @@
 - title: Teaching
   type: time_table
   contents:
-    - title: Teaching Assistant, POSCO AI·BigData Academy
+    - title: Teaching Assistant, POSCO AI·BigData Academy (33rd Cohort)
+      year: 2026-S
+      items:
+        - Machine Learning and Deep Learning
+    - title: Teaching Assistant, POSCO AI·BigData Academy (32nd Cohort)
       year: 2026-S
       items:
         - Machine Learning and Deep Learning
