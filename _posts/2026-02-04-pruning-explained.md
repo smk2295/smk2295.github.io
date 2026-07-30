@@ -1,0 +1,20 @@
+---
+layout: post
+title: "Pruning: removing what a network doesn't need"
+date: 2026-02-04 10:00:00+0900
+description: From Optimal Brain Damage to the Lottery Ticket Hypothesis — what the pruning literature actually removes, and why unstructured sparsity doesn't automatically buy speed.
+tags: model-compression pruning efficiency
+categories: research-notes
+related_posts: false
+---
+
+**Han, S., Pool, J., Tran, J., & Dally, W. J. (2015). [Learning both Weights and Connections for Efficient Neural Networks](https://arxiv.org/abs/1506.02626). NeurIPS 2015.**
+**Frankle, J., & Carbin, M. (2019). [The Lottery Ticket Hypothesis: Finding Sparse, Trainable Neural Networks](https://arxiv.org/abs/1803.03635). ICLR 2019.**
+
+**The basic method (Han et al., 2015).** Train a dense network to convergence, then remove all weights below a magnitude threshold, then retrain (fine-tune) the remaining sparse network to recover accuracy, optionally iterating this prune-then-retrain cycle. On AlexNet, this reduced parameter count from 61M to 6.7M (a 9x reduction); on VGG-16, from 138M to 10.3M (13x) — with no reported loss in top-1/top-5 accuracy. The method is a magnitude criterion applied to individual weights: it says nothing about the shape of what's removed, which is why it produces **unstructured** sparsity — a scattered pattern of zeros with no consistent shape.
+
+**Why unstructured sparsity doesn't automatically mean faster.** A 90%-sparse unstructured weight matrix has 90% fewer nonzero entries, but a dense-matrix-multiply kernel on standard hardware does not know to skip the zeros; it multiplies through them just like any other value. Realizing an actual speedup from unstructured sparsity requires sparse-matrix kernels or hardware with native sparse support, neither of which is universal. This is the reason **structured** pruning — removing entire channels, attention heads, or layers rather than individual weights — is more directly useful for latency: the result is a smaller *dense* matrix that ordinary kernels multiply faster, at the cost of tolerating less aggressive removal before accuracy degrades, since you're forced to remove in coarser units.
+
+**The Lottery Ticket Hypothesis (Frankle & Carbin, 2019).** This paper asks a follow-up question about pruning results like Han et al.'s: is the sparse subnetwork itself special, or does any sparse mask of the same size work equally well if retrained from scratch? Their experiment: take a pruned subnetwork, but instead of keeping its trained weights, reset each remaining weight to its *original pretraining initialization value* and train from there. They report that these "winning tickets" — sparse subnetworks paired with their original initialization — train to match or exceed the accuracy of the full dense network, and do so faster than the dense network, even at sparsity levels below 10-20% of the original parameter count. Critically, the same sparse mask with freshly *random* re-initialization (rather than the original init values) usually fails to match this performance — implying that both the structure *and* the specific initial values found by the pruning process are doing real work, not the mask shape alone. This result reframed pruning from "a way to compress an already-trained network" into a question about which sparse subnetworks are trainable in the first place, and motivated a line of follow-up work on identifying such subnetworks earlier in (or even before) training rather than only after full convergence.
+
+**Where later importance criteria differ from plain magnitude.** Magnitude pruning is a strong, simple baseline, but it only looks at the weight's own value, not its effect on the loss. Criteria building on classic second-order pruning ideas (going back to LeCun, Denker, and Solla's Optimal Brain Damage, NeurIPS 1989) estimate each weight's contribution to the loss via gradient or Hessian information, and structured variants apply the same idea to whole channels or heads using calibration-data activation statistics rather than weight magnitude alone.
