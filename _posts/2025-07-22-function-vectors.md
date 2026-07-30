@@ -10,15 +10,37 @@ related_posts: false
 
 **Todd, E., Li, M. L., Sharma, A. S., Mueller, A., Wallace, B. C., & Bau, D. (2024). [Function Vectors in Large Language Models](https://arxiv.org/abs/2310.15213). ICLR 2024.**
 
-**Setup.** The paper studies autoregressive transformer LMs (GPT-J, GPT-NeoX, Llama-2, and others) on a broad set of in-context learning tasks — lexical mappings (antonym, synonym, English–French translation) as well as more abstract relations — presented as few-shot prompts.
+## The Question
 
-**Method.** For a given task, the authors run the model on many few-shot prompts and average the activations of a specific set of attention heads at the last token position, across many different ICL examples of the same task. Which heads are included is decided by a causal-mediation analysis: heads whose activations, when altered, change the model's output the most for that task are kept; the rest are discarded. Averaging over examples cancels out example-specific noise and leaves a single vector — the **function vector (FV)** — that the authors claim represents "the operation the demonstrations are specifying," not any particular demonstration.
+When a language model sees a few-shot prompt like "hot → cold, big → small, fast → ___", it produces the right answer with no gradient update at all. Somewhere in the forward pass, the model has to represent *which task the demonstrations are specifying*. Where does that representation live?
 
-**Core experiment.** The causal test is the important part: the FV is added to the residual stream at the corresponding layer during a **zero-shot** forward pass — a prompt with no demonstrations at all — and the model performs the task anyway. Across the tasks tested, this zero-shot-plus-FV setup recovers a large fraction of the accuracy of the true few-shot prompt, despite the model never seeing a single input–output example in that forward pass.
+## Method: Averaging Activations Into a Single Vector
 
-**Robustness checks reported in the paper:**
-- The same FV, extracted from one prompt template, still induces the task when patched into a differently-formatted prompt.
-- FVs are computed from a small, consistent subset of heads (on the order of tens out of thousands across the model) — most heads contribute little to the effect, and ablating the identified heads specifically removes the model's ICL ability on the task while ablating random heads of the same count does not.
-- Vector arithmetic on FVs (e.g., combining FVs for related tasks) produces semantically related — though not always fully interpretable — behavior, suggesting some compositional structure to the space FVs live in.
+The paper studies several autoregressive transformers (GPT-J, GPT-NeoX, Llama-2, and others) across a broad set of in-context tasks — lexical mappings (antonym, synonym, translation) as well as more abstract relations.
 
-**Takeaway.** The paper's central claim is that whatever "learning the task from examples" means mechanistically, it collapses to a single, low-dimensional, addable object located in a sparse set of attention heads — not a diffuse, whole-network state. That object is what later work (including our own on uncertainty in ICL) treats as the thing to be uncertain *about*, rather than only a thing to be *induced* with.
+The construction has two steps:
+
+1. **Locate the relevant heads.** A causal-mediation analysis identifies the small set of attention heads whose activations, when altered, change the model's task-following behavior the most.
+2. **Average across examples.** For a fixed task, the activations of those heads are averaged across many different few-shot prompts of that task, at the last token position. Averaging cancels out example-specific noise and leaves one vector per task — the **function vector (FV)**.
+
+## The Causal Test
+
+The important experiment isn't just finding a vector that correlates with a task — it's showing the vector *causes* the behavior:
+
+- The FV is added to the residual stream during a **zero-shot** forward pass — a prompt with no demonstrations at all.
+- The model performs the task anyway, recovering a large fraction of true few-shot accuracy, despite never seeing a single input–output example in that forward pass.
+
+## Robustness Checks
+
+| Check | Result reported |
+|---|---|
+| Different prompt template | Same FV still induces the task when patched into a differently-worded prompt |
+| Head count | Only a small, consistent subset of heads (tens, out of thousands) carries the effect |
+| Ablation | Removing the identified heads kills ICL for that task; removing random heads of the same count does not |
+| Vector arithmetic | Combining FVs for related tasks produces semantically related (though not always fully interpretable) behavior |
+
+## Takeaways
+
+1. "Learning the task from examples" reduces to a single, low-dimensional, addable object — not a diffuse, whole-network state.
+2. That object lives in a sparse, identifiable set of attention heads, not spread evenly across the model.
+3. Because the FV is a concrete, extractable thing, it becomes a natural object to reason about uncertainty *over* — not just a lever for inducing behavior. That reframing is the starting point for treating ICL uncertainty as uncertainty about a latent task representation, rather than only about the model's final output.
