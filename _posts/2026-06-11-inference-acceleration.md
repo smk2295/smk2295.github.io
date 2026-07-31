@@ -8,50 +8,30 @@ categories: research-notes
 related_posts: false
 ---
 
-**Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C. H., Gonzalez, J. E., Zhang, H., & Stoica, I. (2023). [Efficient Memory Management for Large Language Model Serving with PagedAttention](https://arxiv.org/abs/2309.06180). SOSP 2023.**
-**Leviathan, Y., Kalman, M., & Matias, Y. (2023). [Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192). ICML 2023.**
-**Teerapittayanon, S., McDanel, B., & Kung, H. T. (2017). [BranchyNet: Fast Inference via Early Exiting from Deep Neural Networks](https://arxiv.org/abs/1709.01686).**
+> Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C. H., Gonzalez, J. E., Zhang, H., & Stoica, I. (2023). [Efficient Memory Management for Large Language Model Serving with PagedAttention](https://arxiv.org/abs/2309.06180). SOSP 2023.
+>
+> Leviathan, Y., Kalman, M., & Matias, Y. (2023). [Fast Inference from Transformers via Speculative Decoding](https://arxiv.org/abs/2211.17192). ICML 2023.
+>
+> Teerapittayanon, S., McDanel, B., & Kung, H. T. (2017). [BranchyNet: Fast Inference via Early Exiting from Deep Neural Networks](https://arxiv.org/abs/1709.01686).
 
-None of these three papers prunes or quantizes anything, and that's the point of pairing them here: a transformer's serving latency is also shaped by how autoregressive decoding is scheduled and how memory for the KV cache is managed — axes that shrinking the model doesn't automatically address.
+None of these three papers prunes or quantizes a single weight, which is exactly why they're worth reading together after two posts about doing precisely that. A model's serving latency isn't only a function of how many parameters it has — it's also shaped by how decoding gets scheduled and how memory for the KV cache gets managed, and shrinking the model does nothing for either.
 
-## PagedAttention / vLLM: the KV Cache Is a Memory-Management Problem
+## The KV cache is a memory-management problem, not a model problem
 
-During autoregressive generation, a transformer caches key/value activations for every previous token so they aren't recomputed at each step. For long sequences and many concurrent requests, this cache can be *larger than the model weights themselves*, and its size changes dynamically as generation proceeds.
+Autoregressive generation caches key/value activations for every previous token so they don't get recomputed at each step. For long sequences and many concurrent requests, that cache can end up larger than the model weights themselves, and its size keeps changing as generation proceeds. Standard serving systems allocate it contiguously per request — which fragments memory and wastes capacity in a way operating systems solved for process memory decades ago. PagedAttention just imports that solution: allocate KV-cache memory in fixed-size, non-contiguous blocks the way an OS pages virtual memory, and let the vLLM system built on top share blocks across requests wherever possible. Reported gain: 2–4x throughput at the same latency, with the model itself completely untouched.
 
-**Diagnosis:** standard serving systems allocate this cache contiguously per request, causing memory fragmentation and wasted capacity — the same problem operating systems solved for process memory decades ago.
+## The sequential bottleneck doesn't have to stay sequential
 
-**Fix:** PagedAttention allocates KV-cache memory in fixed-size, non-contiguous blocks, the way an OS pages virtual memory. The vLLM serving system built on top achieves near-zero cache waste and shares cache blocks across requests where possible.
+Decoding one token at a time is inherently sequential — the next forward pass depends on the last token produced. Leviathan et al.'s observation is that a lot of tokens in a typical generation are, in hindsight, easy: predictable enough that a small, cheap draft model would have guessed the same token the large model eventually does. So let the draft model propose several tokens ahead, and have the large model verify the whole proposed run in one parallel pass, keeping whichever prefix matches. A rejection-sampling correction makes this exact, not approximate — the output distribution is identical to standard decoding, just faster. Reported: 2–3x speedup on T5-XXL, no retraining, no architecture change.
 
-**Result:** 2–4x throughput improvement over prior state-of-the-art serving systems at the same latency, with larger gains for longer sequences and larger models — entirely a scheduling and memory-layout change, with the model itself untouched.
+## Not every input deserves the same depth
 
-## Speculative Decoding: Make the Sequential Bottleneck Parallel
+BranchyNet is the odd one out — an architectural idea rather than a scheduling one. Attach classifiers at intermediate layers, and let an input exit through an early branch the moment its prediction there is confident enough, skipping whatever layers remain. Only the inputs that actually need the full network get it. It's a bet that difficulty varies across inputs, and that spending the same fixed depth on all of them is wasted computation on the easy majority.
 
-Autoregressive decoding is inherently sequential — one forward pass produces one token, and the next token's forward pass depends on it.
+| Method | What it changes |
+|---|---|
+| PagedAttention | How memory is laid out around a fixed model |
+| Speculative decoding | How many forward passes are needed |
+| Early exit | How much of the network an input actually traverses |
 
-**Observation:** many tokens in a generated sequence are, in retrospect, "easy" — predictable enough that a much smaller, cheaper draft model would have guessed the same token as the large target model.
-
-**Method:** the small draft model proposes several tokens ahead; the large model verifies the entire proposed continuation in a single parallel forward pass, accepting whichever prefix matches what it would have produced on its own. A rejection-sampling correction guarantees the output distribution is *exactly* the same as standard decoding — not an approximation.
-
-**Result:** 2–3x speedup on T5-XXL, with no retraining or architecture change to either model, and no change to the output distribution.
-
-## Early Exit / BranchyNet: Not Every Input Needs the Full Network
-
-Side-branch classifiers are attached at intermediate layers. An input exits through an early branch once its prediction there is confident enough, skipping the remaining layers entirely; only inputs that fail the confidence check proceed deeper.
-
-Unlike the two methods above, this is an **architectural** premise, not a scheduling or parallelism one: it assumes inputs vary in difficulty, and spends compute proportionally rather than running every input through the same fixed depth.
-
-## Why Grouping These Three Together Matters
-
-| Method | What it changes | Touches model weights? |
-|---|---|---|
-| PagedAttention | How memory is laid out around a fixed model | No |
-| Speculative decoding | How many forward passes are needed | No |
-| Early exit | How much of the network an input traverses | No |
-
-All three are legitimate "make it faster" techniques that never touch a single weight value. A serving system that only invests in a smaller model — via pruning or quantization — while ignoring scheduling, memory layout, and input-dependent compute is leaving comparable or larger gains unaddressed.
-
-## Takeaways
-
-1. Model size and inference speed are correlated, not identical — several of the largest available speedups live entirely outside the model itself.
-2. KV-cache management, decoding parallelism, and input-dependent depth are three genuinely separate bottlenecks, not three names for the same one.
-3. A well-compressed model served on a bad memory/scheduling stack can still be slow — compression and serving-system design are complementary, not substitutes.
+Stack these next to the pruning and quantization posts and the picture gets clearer: "make it faster" isn't one problem with one lever. A perfectly pruned, perfectly quantized model can still crawl if it's served on a bad memory layout, decoded one token at a time when it didn't have to be, and run through every layer regardless of how easy the input was. Model size and inference speed are correlated. They are not the same thing.

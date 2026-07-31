@@ -8,41 +8,26 @@ categories: research-notes
 related_posts: false
 ---
 
-**Wang, T., Wang, K., Cai, H., Lin, J., Liu, Z., & Han, S. (2020). [APQ: Joint Search for Network Architecture, Pruning and Quantization Policy](https://arxiv.org/abs/2006.08509). CVPR 2020.**
+> Wang, T., Wang, K., Cai, H., Lin, J., Liu, Z., & Han, S. (2020). [APQ: Joint Search for Network Architecture, Pruning and Quantization Policy](https://arxiv.org/abs/2006.08509). CVPR 2020.
 
-## The Problem With Sequential Pipelines
+The default way to combine pruning and quantization is to stage them: pick an architecture, decide a pruning policy for it, then decide a quantization policy for whatever survived pruning, fine-tuning in between. It's a reasonable-sounding pipeline, and it has a structural flaw that has nothing to do with how carefully you tune each stage. A pruning stage that only ever sees the full-precision model has no way to know which channels will turn out to matter most once quantization error enters the picture — the two decisions are entangled in reality, but the pipeline resolves them as if they weren't.
 
-The default way to combine compression techniques is to apply them in stages: design or select an architecture, then decide a pruning policy for it, then decide a quantization policy for what's left, fine-tuning between stages.
+## Searching all three at once, cheaply
 
-Each stage makes its decision based only on the model as it exists *at that point*, with no knowledge of what the next stage will do to it. A channel judged "important enough to keep" by a pruning stage that only sees the full-precision model isn't necessarily the channel most worth keeping once quantization error is also accounted for — the two decisions are entangled, but a staged pipeline resolves them independently anyway.
+APQ's answer is to stop staging and treat architecture choice, per-layer pruning ratio, and per-layer bit-width as one combined space to search jointly. The obvious problem is cost — naively evaluating a single point in that space means training a candidate and measuring its accuracy, and the joint space dwarfs any one of the three sub-spaces on its own.
 
-## APQ's Approach: Search the Joint Space, But Make It Cheap
+Their way around it is a two-step trick with the training cost pushed as far to the side as possible. First, train one accuracy predictor for full-precision architectures using a "once-for-all" network — built so many sub-architectures can be evaluated without training each one separately, so the predictor itself is nearly free per candidate. Then transfer that predictor into a quantization-aware version, using a comparatively small number of *actual* quantized evaluations rather than building a large quantized-accuracy dataset from scratch.
 
-APQ treats architecture choice, per-layer pruning ratio, and per-layer bit-width as **one combined search space** and searches over it jointly rather than staging the three decisions.
+## What that's worth
 
-The obstacle is cost: naively, evaluating one point in this joint space means training or fine-tuning a candidate configuration and measuring its accuracy, and the joint space is far larger than any one of the three sub-spaces alone. APQ's contribution is a way around that cost:
-
-1. Train a single accuracy predictor for full-precision candidate architectures using a "once-for-all" network — built so many sub-architectures can be evaluated without separately training each one. This predictor itself requires no extra training cost per candidate.
-2. Transfer that full-precision predictor into a **quantization-aware predictor**, using a comparatively small number of actual quantized (architecture, pruning, quantization) evaluations, rather than collecting a large quantized-accuracy dataset from scratch.
-
-## Reported Results
-
-On ImageNet, at a matched efficiency budget:
+On ImageNet, at matched efficiency budgets:
 
 | Comparison | Result |
 |---|---|
-| vs. staged search (architecture → pruning → quantization separately) | +2.3% accuracy |
-| vs. MobileNetV2 + HAQ (strong prior quantization-search method) | ~2x lower latency, ~1.3x lower energy |
-| Search/data-collection cost | Substantially lower than prior joint NAS+compression approaches |
+| vs. staged search (architecture → pruning → quantization) | +2.3% accuracy |
+| vs. MobileNetV2 + HAQ | ~2x lower latency, ~1.3x lower energy |
+| Search cost | Substantially below prior joint NAS+compression methods |
 
-## Why the Accuracy Gain Isn't Surprising, Given the Setup
+None of this should read as "joint search discovered a clever trick." A staged pipeline is leaving accuracy on the table *by construction* — the pruning decision literally cannot see the quantization policy that comes after it, so it has no way to account for the interaction between the two. A joint search, even an approximate one, at least has access to that interaction. The actual engineering work in the paper isn't a smarter pruning or quantization rule; it's making a combinatorially larger joint space cheap enough to search at all.
 
-The point isn't that joint search finds some clever trick unavailable to staged pipelines — it's that a staged pipeline is leaving information on the table **by construction**. The pruning decision in a staged pipeline literally cannot see the quantization policy applied afterward, so it can't account for how the two interact. A joint search, even an approximate one, has access to that interaction.
-
-The real engineering content of the paper is elsewhere: a joint search space is combinatorially larger, and most of APQ's method is about making evaluation of that larger space cheap enough to be tractable — not about a fundamentally different compression technique.
-
-## Takeaways
-
-1. Staged compression pipelines are structurally blind to interactions between stages — not just suboptimal by chance.
-2. Framing "how much to prune" and "how many bits to use" as one joint decision under a shared budget turns compression into a constrained combinatorial search problem.
-3. Progress in this direction usually comes from making the joint search *cheap enough to run*, not from a better pruning or quantization criterion in isolation.
+That's the general shape of the argument, beyond this one paper: once "how much to prune" and "how many bits to use" get treated as one decision under a shared budget instead of two independent knobs, compression turns into a constrained search problem, and most of the progress comes from making that search tractable rather than from a better criterion for either piece in isolation.

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Paper notes — Function Vectors in Large Language Models
+title: A task, folded into a single vector
 date: 2025-07-22 10:00:00+0900
 description: Todd, Li, Sharma, Mueller, Wallace, and Bau (ICLR 2024) show that in-context learning induces a single, portable vector that causally encodes the task.
 tags: uncertainty in-context-learning interpretability
@@ -8,39 +8,24 @@ categories: paper-notes
 related_posts: false
 ---
 
-**Todd, E., Li, M. L., Sharma, A. S., Mueller, A., Wallace, B. C., & Bau, D. (2024). [Function Vectors in Large Language Models](https://arxiv.org/abs/2310.15213). ICLR 2024.**
+> Todd, E., Li, M. L., Sharma, A. S., Mueller, A., Wallace, B. C., & Bau, D. (2024). [Function Vectors in Large Language Models](https://arxiv.org/abs/2310.15213). ICLR 2024.
 
-## The Question
+Show a language model "hot → cold, big → small, fast → ___" and it fills in the blank correctly, no training involved. Somewhere in that single forward pass, the model has to be holding onto *which task the examples are asking for*. Todd et al. went looking for that thing, and found it's smaller and more portable than you'd expect.
 
-When a language model sees a few-shot prompt like "hot → cold, big → small, fast → ___", it produces the right answer with no gradient update at all. Somewhere in the forward pass, the model has to represent *which task the demonstrations are specifying*. Where does that representation live?
+## Finding the vector
 
-## Method: Averaging Activations Into a Single Vector
+The recipe has two steps. First, a causal-mediation analysis narrows down which attention heads actually matter for a given task — heads whose activations, when nudged, move the model's output the most. Second, those heads' activations get averaged across many few-shot prompts of the same task, at the final token position. Averaging washes out whatever is specific to any one example and leaves behind something that looks like a representation of the task itself: a **function vector**.
 
-The paper studies several autoregressive transformers (GPT-J, GPT-NeoX, Llama-2, and others) across a broad set of in-context tasks — lexical mappings (antonym, synonym, translation) as well as more abstract relations.
+This is tested across GPT-J, GPT-NeoX, Llama-2, and others, on tasks ranging from simple lexical mappings (antonym, synonym, translation) to more abstract relations.
 
-The construction has two steps:
+## The test that matters
 
-1. **Locate the relevant heads.** A causal-mediation analysis identifies the small set of attention heads whose activations, when altered, change the model's task-following behavior the most.
-2. **Average across examples.** For a fixed task, the activations of those heads are averaged across many different few-shot prompts of that task, at the last token position. Averaging cancels out example-specific noise and leaves one vector per task — the **function vector (FV)**.
+Finding a vector that correlates with a task is easy. The interesting claim is that it *causes* the task, and the experiment for that is clean: take the function vector, add it to a **zero-shot** prompt — no demonstrations, nothing — and see what happens. The model performs the task anyway, recovering most of the accuracy it would have gotten from the real few-shot examples, despite never seeing one.
 
-## The Causal Test
+A few extra checks make the causal story harder to dismiss as coincidence:
 
-The important experiment isn't just finding a vector that correlates with a task — it's showing the vector *causes* the behavior:
+- The same vector, extracted from one prompt template, still works when patched into a differently-worded prompt.
+- Only a small, consistent handful of heads carry the effect — ablating exactly those heads kills the model's ICL ability on the task; ablating an equal number of random heads doesn't.
+- Vectors for related tasks can be combined and still produce sensible, if not always fully interpretable, behavior — some hint of compositional structure in whatever space these vectors live in.
 
-- The FV is added to the residual stream during a **zero-shot** forward pass — a prompt with no demonstrations at all.
-- The model performs the task anyway, recovering a large fraction of true few-shot accuracy, despite never seeing a single input–output example in that forward pass.
-
-## Robustness Checks
-
-| Check | Result reported |
-|---|---|
-| Different prompt template | Same FV still induces the task when patched into a differently-worded prompt |
-| Head count | Only a small, consistent subset of heads (tens, out of thousands) carries the effect |
-| Ablation | Removing the identified heads kills ICL for that task; removing random heads of the same count does not |
-| Vector arithmetic | Combining FVs for related tasks produces semantically related (though not always fully interpretable) behavior |
-
-## Takeaways
-
-1. "Learning the task from examples" reduces to a single, low-dimensional, addable object — not a diffuse, whole-network state.
-2. That object lives in a sparse, identifiable set of attention heads, not spread evenly across the model.
-3. Because the FV is a concrete, extractable thing, it becomes a natural object to reason about uncertainty *over* — not just a lever for inducing behavior. That reframing is the starting point for treating ICL uncertainty as uncertainty about a latent task representation, rather than only about the model's final output.
+What I find most useful about this result isn't the mechanism by itself, it's what it hands you afterward: "the task the model thinks it's solving" stops being a vague notion and becomes a concrete object you can extract, perturb, and measure. That's exactly the kind of object you need if you want to ask how *uncertain* a model is about what task it's even doing — a question that's much harder to ask when the only handle you have is the model's final output.

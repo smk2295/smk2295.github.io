@@ -134,7 +134,7 @@ bing_site_verification: # out your bing-site-verification ID (Bing Webmaster)
 # -----------------------------------------------------------------------------
 
 blog_name: # blog_name will be displayed in your blog page
-blog_description: a simple whitespace theme for academics
+blog_description: # blog_description will be displayed in your blog page
 permalink: /blog/:year/:title/
 lsi: false # produce an index for related posts
 

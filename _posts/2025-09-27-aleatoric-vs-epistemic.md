@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Paper notes — What Uncertainties Do We Need in Bayesian Deep Learning?
+title: Two ways for a model to say "I don't know"
 date: 2025-09-27 10:00:00+0900
 description: Kendall and Gal (NeurIPS 2017) give the standard recipe for modeling aleatoric and epistemic uncertainty jointly in a single network, on segmentation and depth regression.
 tags: uncertainty bayesian-deep-learning
@@ -8,50 +8,41 @@ categories: paper-notes
 related_posts: false
 ---
 
-**Kendall, A., & Gal, Y. (2017). [What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?](https://arxiv.org/abs/1703.04977) NeurIPS 2017.**
+> Kendall, A., & Gal, Y. (2017). [What Uncertainties Do We Need in Bayesian Deep Learning for Computer Vision?](https://arxiv.org/abs/1703.04977) NeurIPS 2017.
 
-## Two Kinds of "Uncertain"
+A model can be unsure for two completely different reasons, and it's worth being pedantic about the difference because the fix is not the same. **Aleatoric** uncertainty is baked into the observation — sensor noise, occlusion, a genuinely ambiguous input — and no amount of extra training data touches it, because the world is what's ambiguous, not the model. **Epistemic** uncertainty lives in the model's parameters instead: it's largest on inputs unlike anything it's trained on, and it does shrink as relevant data accumulates. Kendall and Gal is the paper that made this split precise enough to actually build.
 
-- **Aleatoric** uncertainty is inherent to the observation itself — sensor noise, occlusion, genuinely ambiguous input. It does not shrink with more training data, because the ambiguity isn't in the model.
-- **Epistemic** uncertainty lives in the model's parameters. It does shrink with more relevant training data, and is largest on inputs unlike anything in the training distribution.
+## Making the model report its own noise
 
-## Modeling Aleatoric Uncertainty: A Heteroscedastic Loss
-
-Instead of a network that outputs only a point prediction $\hat y$, the network outputs both a prediction and a predicted variance $\sigma^2(x)$ for that specific input. For regression, the negative log-likelihood under a Gaussian with input-dependent variance is
+For the aleatoric half, the network stops outputting a single point prediction $\hat y$ and instead outputs a prediction *and* a variance $\sigma^2(x)$ specific to that input. Plug that into a Gaussian negative log-likelihood and you get:
 
 $$
 \mathcal{L} = \frac{1}{2\sigma^2(x)} \|y - \hat y\|^2 + \frac{1}{2}\log \sigma^2(x).
 $$
 
-This loss naturally penalizes overconfident wrong answers less on inputs the network flags as noisy (large $\sigma^2$), while forcing confident correctness on inputs it doesn't. No separate supervision for "what counts as noisy" is needed — the variance head is trained end-to-end, purely from this loss.
+Nobody tells the network which inputs are noisy. The loss does it on its own: getting a "noisy" input wrong costs less once $\sigma^2(x)$ is allowed to grow, so the network learns to widen its own uncertainty exactly where it needs to, purely by minimizing this one objective.
 
-## Modeling Epistemic Uncertainty: Monte Carlo Dropout
+## Making the model report its own ignorance
 
-The network keeps dropout **active at test time** (not just during training) and is run $T$ times on the same input, producing $T$ slightly different outputs from the different dropout masks. Gal and Ghahramani's earlier result — which this paper builds on — shows this is a valid approximate sample from a Bayesian posterior over network weights. The variance across the $T$ outputs is the epistemic uncertainty estimate.
+For epistemic uncertainty, the trick is almost absurdly cheap: leave dropout switched on at *test* time, run the same input through the network $T$ times, and look at how much the $T$ outputs disagree. Gal and Ghahramani had already shown this disagreement approximates sampling from a Bayesian posterior over the weights — so variance across those samples becomes a genuine (if approximate) measure of what the model doesn't know.
 
-## Combining Both
-
-The full model has both the heteroscedastic variance head and MC-dropout sampling at test time. Total predictive variance is derived as:
+Put both pieces in one network and the total predictive variance decomposes cleanly:
 
 $$
 \text{Var}[\text{total}] = \underbrace{\mathbb{E}[\sigma^2(x)]}_{\text{aleatoric}} + \underbrace{\text{Var}[\hat y]}_{\text{epistemic, across MC samples}}
 $$
 
-The two uncertainty types add — they are estimated jointly in one model, not by two disconnected pipelines.
+Two numbers, estimated jointly, not two disconnected pipelines bolted together after the fact.
 
-## Tasks and Results
+## What actually shows up in the results
 
-Evaluated on semantic segmentation (CamVid, Cityscapes) and monocular depth regression (Make3D, NYUv2):
+Tested on semantic segmentation (CamVid, Cityscapes) and depth regression (Make3D, NYUv2):
 
 | Finding | Detail |
 |---|---|
-| Aleatoric uncertainty location | Largest at object boundaries and on small/distant objects — regions genuinely ambiguous from a single image |
-| Epistemic uncertainty location | Largest on inputs and object classes underrepresented in training |
-| Combined vs. either alone | Better-calibrated, lower predictive loss |
-| Effect of scale | As training data grows, aleatoric uncertainty dominates and epistemic uncertainty's relative share shrinks — consistent with the definitions |
+| Where aleatoric uncertainty is largest | Object boundaries, small or distant objects — regions genuinely ambiguous from one image |
+| Where epistemic uncertainty is largest | Inputs and classes underrepresented in training |
+| Combined vs. either alone | Better calibrated, lower predictive loss |
+| Effect of more training data | Aleatoric uncertainty comes to dominate; epistemic's share shrinks — exactly what the definitions predict |
 
-## Takeaways
-
-1. Conflating the two uncertainty types produces worse-calibrated models than modeling them jointly, even though modeling both costs little extra machinery.
-2. The heteroscedastic loss and MC-dropout mechanics here are vision-specific, but the *decomposition itself* — and the finding that it matters — is the template later NLP and in-context-learning uncertainty work explicitly imports.
-3. Neither mechanism transfers directly to autoregressive generation or to a no-retraining setting like ICL, which is exactly the gap that later work (including the paper this reading list supports) has to fill with a different estimator.
+None of the machinery here — the heteroscedastic loss, MC dropout — transfers directly to a setting like in-context learning, where there's no retraining loop to sample a weight posterior from. But the decomposition itself, and the finding that conflating the two produces a worse-calibrated model than separating them, is the part that later NLP and ICL uncertainty work keeps importing wholesale, even after throwing out everything else.

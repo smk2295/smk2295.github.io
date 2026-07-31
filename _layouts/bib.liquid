@@ -268,6 +268,15 @@
         <a href="{{ entry.website }}" class="btn btn-sm z-depth-0" role="button">Website</a>
       {% endif %}
     </div>
+    {% if entry.press %}
+      <div class="links press-links">
+        {% assign press_items = entry.press | split: ";" %}
+        {% for press_item in press_items %}
+          {% assign press_parts = press_item | split: "|" %}
+          <a href="{{ press_parts[1] }}" class="btn btn-sm z-depth-0" role="button" target="_blank">{{ press_parts[0] }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
     {% if site.enable_publication_badges %}
       {% assign entry_has_altmetric_badge = false %}
       {% if entry.altmetric and entry.altmetric != 'false' %}

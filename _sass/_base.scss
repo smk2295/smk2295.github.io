@@ -526,20 +526,48 @@ footer.sticky-bottom {
 }
 
 .tag-category-list {
-  border-bottom: 1px solid var(--global-divider-color);
-  text-align: center;
-  padding-top: 1rem;
+  padding: 0.5rem 0 1.5rem;
 
   ul {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    display: flow-root;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
 
-    p,
     li {
       list-style: none;
-      display: inline-block;
-      padding: 1rem 0.5rem;
-      color: var(--global-text-color-light);
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4em;
+        color: var(--global-text-color-light);
+        background-color: var(--global-divider-color);
+        border-radius: 999px;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition:
+          color 0.15s ease-in-out,
+          background-color 0.15s ease-in-out;
+
+        &:hover {
+          color: var(--global-hover-text-color);
+          background-color: var(--global-theme-color);
+        }
+      }
+
+      &.category-chip a {
+        color: var(--global-hover-text-color);
+        background-color: var(--global-theme-color);
+        opacity: 0.85;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
     }
   }
 }
@@ -556,53 +584,81 @@ footer.sticky-bottom {
   padding: 0;
 
   li {
+    position: relative;
     list-style: none;
-    padding: 1.5rem 1.25rem;
-    margin-bottom: 0.5rem;
-    border-radius: 10px;
-    border: 1px solid transparent;
+    padding: 1.5rem 1.5rem 1.5rem 1.75rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    border: 1px solid var(--global-divider-color);
+    overflow: hidden;
     transition:
       background-color 0.2s ease-in-out,
       border-color 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out,
       transform 0.2s ease-in-out;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--global-theme-color);
+      opacity: 0.35;
+      transition: opacity 0.2s ease-in-out;
+    }
 
     &:hover {
       background-color: var(--global-card-bg-color);
-      border-color: var(--global-divider-color);
-      box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.06);
-      transform: translateY(-2px);
+      border-color: var(--global-theme-color);
+      box-shadow: 0 0.5rem 1.25rem rgba(0, 0, 0, 0.08);
+      transform: translateY(-3px);
+
+      &::before {
+        opacity: 1;
+      }
     }
 
     h3 {
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
     }
 
     p {
       color: var(--global-text-color-light);
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
       line-height: 1.6;
     }
 
     .post-meta {
+      display: inline-block;
       color: var(--global-text-color-light);
-      font-size: 0.8rem;
-      margin-bottom: 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
       font-variant-numeric: tabular-nums;
     }
 
     .post-tags {
       color: var(--global-text-color-light);
       font-size: 0.78rem;
-      padding-top: 0.5rem;
+      padding-top: 0.25rem;
       padding-bottom: 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.35rem;
 
       a {
-        display: inline-block;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3em;
         color: var(--global-text-color-light);
         background-color: var(--global-divider-color);
         border-radius: 999px;
-        padding: 0.15rem 0.6rem;
-        margin: 0.15rem 0.15rem 0.15rem 0;
+        padding: 0.2rem 0.7rem;
         transition:
           color 0.15s ease-in-out,
           background-color 0.15s ease-in-out;
@@ -611,14 +667,25 @@ footer.sticky-bottom {
           color: var(--global-hover-text-color);
           background-color: var(--global-theme-color);
         }
+
+        &.category-chip {
+          color: var(--global-hover-text-color);
+          background-color: var(--global-theme-color);
+          opacity: 0.85;
+
+          &:hover {
+            opacity: 1;
+          }
+        }
       }
     }
 
     a.post-title {
       color: var(--global-text-color);
       text-decoration: none;
-      font-size: 1.3rem;
+      font-size: 1.35rem;
       font-weight: 700;
+      letter-spacing: -0.01em;
       transition: color 0.15s ease-in-out;
 
       &:hover {
