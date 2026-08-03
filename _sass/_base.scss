@@ -35,6 +35,29 @@ table {
   }
 }
 
+#markdown-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.95rem;
+
+  th,
+  td {
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid var(--global-divider-color);
+    text-align: left;
+  }
+
+  th {
+    border-bottom: 2px solid var(--global-divider-color);
+    color: var(--global-text-color);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
 a,
 table.table a {
   color: var(--global-theme-color);
