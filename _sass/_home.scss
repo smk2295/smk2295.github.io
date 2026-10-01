@@ -1,0 +1,529 @@
+/*******************************************************************************
+ * Home (about) page and blog index page.
+ * Shares the accent variables defined in _post.scss.
+ ******************************************************************************/
+
+@mixin gradient-text {
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@mixin glow-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(110% 90% at 0% 0%, var(--accent-hero) 0%, transparent 60%),
+    radial-gradient(90% 80% at 100% 100%, var(--accent-2-hero) 0%, transparent 65%),
+    var(--surface);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: radial-gradient(var(--accent-line) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: linear-gradient(135deg, transparent 50%, #000 100%);
+    -webkit-mask-image: linear-gradient(135deg, transparent 50%, #000 100%);
+    opacity: 0.5;
+  }
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Home page: latest post cards
+ * ------------------------------------------------------------------------- */
+
+.home-page {
+  // --- News timeline ----------------------------------------------------------
+  .home-timeline {
+    position: relative;
+    margin: 0.5rem 0 2rem;
+    padding: 0;
+    list-style: none;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0.6rem;
+      bottom: 0.6rem;
+      left: 6.4rem;
+      width: 2px;
+      background: linear-gradient(180deg, var(--accent-line), var(--accent-2-line), transparent);
+    }
+
+    li {
+      position: relative;
+      display: grid;
+      grid-template-columns: 6.4rem 1fr;
+      gap: 1.6rem;
+      padding: 0.6rem 0;
+
+      &::before {
+        content: "";
+        position: absolute;
+        left: calc(6.4rem - 5px);
+        top: 1.05rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--surface);
+        border: 3px solid var(--accent);
+      }
+
+      &:first-child::before {
+        background: var(--accent);
+        box-shadow: 0 0 0 5px var(--accent-soft);
+      }
+    }
+
+    time {
+      padding-top: 0.15rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .home-timeline-body {
+      padding: 0.6rem 0.95rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      transition: border-color 0.2s;
+
+      &:hover {
+        border-color: var(--accent-line);
+      }
+    }
+  }
+
+  // --- Latest post cards -----------------------------------------------------
+  .home-posts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 0.5rem 0 2.5rem;
+  }
+
+  .home-post {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.3rem 1.25rem 1.15rem;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--global-text-color);
+    text-decoration: none;
+    transition:
+      transform 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-line);
+      box-shadow: 0 18px 36px -22px var(--accent);
+
+      .home-post-cta {
+        color: var(--accent);
+        transform: translateX(3px);
+      }
+    }
+
+    span {
+      color: inherit;
+    }
+  }
+
+  .home-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+
+    time {
+      color: var(--muted);
+    }
+
+    .home-post-series {
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+  }
+
+  .home-post-title {
+    font-size: 1.08rem;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+
+  .home-post-desc {
+    flex: 1;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--muted) !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .home-post-cta {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted) !important;
+    transition: all 0.2s;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Blog index
+ * ------------------------------------------------------------------------- */
+
+.blog-index {
+  .blog-hero {
+    @include glow-card;
+    margin: 1.25rem 0 1.5rem;
+    padding: 2.75rem 2.5rem 2.25rem;
+  }
+
+  .blog-eyebrow {
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  .blog-title {
+    margin-bottom: 1rem;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+
+    .grad {
+      @include gradient-text;
+    }
+  }
+
+  .blog-lead {
+    max-width: 36em;
+    margin-bottom: 1.25rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  .blog-count {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--muted);
+
+    strong {
+      color: var(--global-text-color);
+    }
+  }
+
+  // --- Series cards -----------------------------------------------------------
+  .blog-series {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.25rem;
+  }
+
+  .series-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1.4rem 1.4rem 1.2rem;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--accent);
+    background: var(--surface);
+    color: var(--global-text-color);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+
+    &:nth-child(2) {
+      border-top-color: var(--accent-2);
+
+      .series-card-label {
+        color: var(--accent-2);
+      }
+
+      ol li::marker {
+        color: var(--accent-2);
+      }
+    }
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 36px -22px var(--accent);
+
+      .series-card-cta {
+        color: var(--accent);
+      }
+    }
+
+    span,
+    li {
+      color: inherit;
+    }
+
+    .series-card-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .series-card-name {
+      margin: 0.35rem 0 0.75rem;
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    ol {
+      flex: 1;
+      margin: 0 0 0.9rem;
+      padding-left: 1.2rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+
+      li {
+        margin-bottom: 0.3rem;
+        color: var(--muted);
+
+        &::marker {
+          font-weight: 800;
+          color: var(--accent);
+        }
+      }
+    }
+
+    .series-card-cta {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+  }
+
+  // --- Tag chips --------------------------------------------------------------
+  .tag-category-list {
+    padding: 0 0 1.75rem;
+
+    ul {
+      justify-content: flex-start;
+    }
+
+    li a {
+      background: var(--surface);
+      border: 1px solid var(--line);
+    }
+
+    li.category-chip a {
+      color: var(--global-hover-text-color);
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      border-color: transparent;
+      opacity: 1;
+    }
+  }
+
+  // --- Post cards ---------------------------------------------------------------
+  .blog-list {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .blog-card {
+    position: relative;
+    padding: 1.5rem 1.6rem 1.3rem;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition:
+      transform 0.2s ease-in-out,
+      box-shadow 0.2s ease-in-out,
+      border-color 0.2s ease-in-out;
+
+    &:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent-line);
+      box-shadow: 0 18px 40px -26px var(--accent);
+
+      h3 a {
+        color: var(--accent);
+      }
+    }
+
+    h3 {
+      margin: 0.55rem 0 0.5rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1.3;
+      letter-spacing: -0.015em;
+
+      a {
+        color: var(--global-text-color);
+        text-decoration: none;
+        transition: color 0.2s;
+
+        // make the whole card clickable
+        &.stretched::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          z-index: 1;
+        }
+      }
+    }
+  }
+
+  .blog-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.6rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+
+    time {
+      color: var(--muted);
+    }
+
+    .blog-card-series {
+      padding: 0.18rem 0.6rem;
+      border-radius: 999px;
+      color: var(--global-hover-text-color);
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .blog-card-cat {
+      color: var(--accent);
+    }
+  }
+
+  .blog-card-desc {
+    margin-bottom: 0.9rem;
+    font-size: 0.975rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+
+  .blog-card-tags {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+
+    a {
+      padding: 0.15rem 0.65rem;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: all 0.15s;
+
+      &:hover {
+        color: var(--global-hover-text-color);
+        background: var(--accent);
+        border-color: var(--accent);
+      }
+    }
+  }
+
+  // --- Pagination -------------------------------------------------------------
+  .pagination {
+    gap: 0.4rem;
+
+    .page-link {
+      display: grid;
+      place-items: center;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      padding: 0 0.75rem;
+      border-radius: 999px !important;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--global-text-color);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .page-item.active .page-link {
+      color: var(--global-hover-text-color);
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 8px 18px -10px var(--accent);
+    }
+
+    .page-item.disabled .page-link {
+      opacity: 0.4;
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Mobile
+ * ------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .home-page .home-posts {
+    grid-template-columns: 1fr;
+  }
+
+  .home-page .home-timeline {
+    &::before {
+      display: none;
+    }
+
+    li {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  .blog-index {
+    .blog-hero {
+      padding: 2rem 1.4rem 1.75rem;
+    }
+
+    .blog-title {
+      font-size: 1.9rem;
+    }
+  }
+}

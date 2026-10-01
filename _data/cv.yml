@@ -32,6 +32,9 @@
 - title: Experience
   type: time_table
   contents:
+    - title: AI Research Engineer Intern, NetsPresso Tech · XPU Enabler Team
+      institution: Nota AI
+      year: 2026. 10 ~
     - title: 1st BK21 FOUR Monitoring Committee
       institution: POSTECH
       year: 2025. 10 ~ 2026. 02
@@ -62,6 +65,9 @@
 - title: Honors and Awards
   type: time_table
   contents:
+    - year: 2026. 09
+      items:
+        - Grand Prize (1st Place) - the 5th Human Rights & Gender Equality Contest, POSTECH Human Rights Center
     - year: 2026. 06
       items:
         - KCC 2026 XAI Workshop Outstanding Paper Award (Oral)
@@ -105,6 +111,10 @@
 - title: Teaching
   type: time_table
   contents:
+    - title: Teaching Assistant, POSTECH
+      year: 2026-F
+      items:
+        - Introduction to Computer Science and Engineering Specializations (CSED354)
     - title: Teaching Assistant, POSCO AI·BigData Academy (33rd Cohort)
       year: 2026-S
       items:

@@ -14,51 +14,53 @@ layout: default
 
 {% assign url_beginning = page.url | slice: 0, 6 %}
 
-<div class="post">
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <p class="post-meta">
-      Created in {{ page.date | date: '%B %d, %Y' }}
-      {% if page.author %}by {{ page.author }}{% endif %}
-      {% if page.last_updated %}, last updated in {{ page.last_updated | date: '%B %d, %Y' }}{% endif %}
-      {% if page.meta %}• {{ page.meta }}{% endif %}
-    </p>
-    <p class="post-tags">
-      {% if url_beginning == '/blog/' %}
-        <a href="{{ year | prepend: '/blog/' | prepend: site.baseurl}}"> <i class="fa-solid fa-calendar fa-sm"></i> {{ year }} </a>
-      {% else %}
-        <i class="fa-solid fa-calendar fa-sm"></i> {{ year }}
-      {% endif %}
-      {% if tags != '' %}
-        &nbsp; &middot; &nbsp;
-        {% for tag in page.tags %}
-          {% if url_beginning == '/blog/' %}
-            <a href="{{ tag | slugify | prepend: '/blog/tag/' | prepend: site.baseurl}}"> <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}</a>
-          {% else %}
-            <i class="fa-solid fa-hashtag fa-sm"></i> {{ tag }}
-          {% endif %}
-          {% unless forloop.last %}
-            &nbsp;
-          {% endunless %}
-        {% endfor %}
-      {% endif %}
+{% if page.series %}
+  {% assign series_posts = site.posts | where: 'series', page.series | sort: 'date' %}
+  {% for p in series_posts %}
+    {% if p.url == page.url %}{% assign series_index = forloop.index %}{% endif %}
+  {% endfor %}
+{% endif %}
 
-      {% if categories != '' %}
-        &nbsp; &middot; &nbsp;
+<div class="post post-single">
+  <header class="post-header post-hero">
+    {% if categories != '' or page.series %}
+      <p class="post-eyebrow">
+        {% if page.series %}
+          <span class="series-badge">{{ page.series }} · {{ series_index }}/{{ series_posts.size }}</span>
+        {% endif %}
         {% for category in page.categories %}
           {% if url_beginning == '/blog/' %}
-            <a href="{{ category | slugify | prepend: '/blog/category/' | prepend: site.baseurl}}">
-              <i class="fa-solid fa-tag fa-sm"></i> {{ category -}}
-            </a>
+            <a href="{{ category | slugify | prepend: '/blog/category/' | prepend: site.baseurl}}">{{ category | replace: '-', ' ' }}</a>
           {% else %}
-            <i class="fa-solid fa-tag fa-sm"></i> {{ category }}
+            {{ category | replace: '-', ' ' }}
           {% endif %}
-          {% unless forloop.last %}
-            &nbsp;
-          {% endunless %}
+          {% unless forloop.last %}&middot;{% endunless %}
         {% endfor %}
+      </p>
+    {% endif %}
+    <h1 class="post-title">{{ page.title }}</h1>
+    {% if page.description %}
+      <p class="post-lead">{{ page.description }}</p>
+    {% endif %}
+    <div class="post-byline">
+      <span class="post-meta">
+        <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: '%B %-d, %Y' }}</time>
+        {% if page.author %}&middot; {{ page.author }}{% endif %}
+        {% if page.last_updated %}&middot; Updated {{ page.last_updated | date: '%B %-d, %Y' }}{% endif %}
+        {% if page.meta %}&middot; {{ page.meta }}{% endif %}
+      </span>
+      {% if tags != '' %}
+        <span class="post-tags">
+          {% for tag in page.tags %}
+            {% if url_beginning == '/blog/' %}
+              <a href="{{ tag | slugify | prepend: '/blog/tag/' | prepend: site.baseurl}}">#{{ tag }}</a>
+            {% else %}
+              <span>#{{ tag }}</span>
+            {% endif %}
+          {% endfor %}
+        </span>
       {% endif %}
-    </p>
+    </div>
   </header>
 
   <article class="post-content">
@@ -72,6 +74,26 @@ layout: default
       {{ content }}
     </div>
   </article>
+
+  {% if page.series and series_posts.size > 1 %}
+    <nav class="series-nav" aria-label="Series">
+      <div class="series-nav-head">
+        <span class="series-name">{{ page.series }}</span>
+        <span class="label">Series · {{ series_posts.size }} posts</span>
+      </div>
+      <ol>
+        {% for p in series_posts %}
+          <li>
+            {% if p.url == page.url %}
+              <span class="current"><span class="num">{{ forloop.index }}</span>{{ p.title }}</span>
+            {% else %}
+              <a href="{{ p.url | relative_url }}"><span class="num">{{ forloop.index }}</span>{{ p.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </nav>
+  {% endif %}
 
   {% if page.citation %}
     {% include citation.liquid %}

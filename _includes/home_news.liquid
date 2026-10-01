@@ -1,0 +1,24 @@
+{% assign news = site.news | reverse %}
+{% if site.announcements.limit %}
+  {% assign news_limit = site.announcements.limit %}
+{% else %}
+  {% assign news_limit = news.size %}
+{% endif %}
+{% if news.size > 0 %}
+  <ol class="home-timeline">
+    {% for item in news limit: news_limit %}
+      <li>
+        <time datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: '%b %-d, %Y' }}</time>
+        <div class="home-timeline-body">
+          {% if item.inline %}
+            {{ item.content | remove: '<p>' | remove: '</p>' | emojify }}
+          {% else %}
+            <a href="{{ item.url | relative_url }}">{{ item.title }}</a>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ol>
+{% else %}
+  <p>No news so far...</p>
+{% endif %}

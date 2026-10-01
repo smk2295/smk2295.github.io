@@ -1,7 +1,7 @@
 ---
 layout: default
 ---
-<div class="post">
+<div class="post home-page">
   <header class="post-header">
     <h1 class="post-title">
       {% if site.title == 'blank' %}
@@ -45,7 +45,7 @@ layout: default
       <h2>
         <a href="{{ '/news/' | relative_url }}" style="color: inherit">news</a>
       </h2>
-      {% include news.liquid limit=true %}
+      {% include home_news.liquid %}
     {% endif %}
 
     <!-- Selected papers -->
@@ -61,7 +61,7 @@ layout: default
       <h2>
         <a href="{{ '/blog/' | relative_url }}" style="color: inherit">latest posts</a>
       </h2>
-      {% include latest_posts.liquid %}
+      {% include home_posts.liquid %}
     {% endif %}
 
     <!-- Social -->

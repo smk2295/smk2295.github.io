@@ -17,7 +17,9 @@ social: true # includes social icons at the bottom of the page
 
 Hi! I’m a second-year M.S. student in Artificial Intelligence at <a href="https://postech.ac.kr/">POSTECH</a>, advised by Prof. <a href="http://namhoonlee.github.io">Namhoon Lee</a>.
 
-My recent work quantifies uncertainty for explainable AI (XAI), and I'm currently working on model compression — pruning, quantization, and joint compression-optimization methods.
+I’m currently an AI Research Engineer Intern at <a href="https://www.nota.ai/">Nota AI</a>.
+
+My recent work quantifies uncertainty for explainable AI (XAI), and I'm now working on model compression — pruning, quantization, and joint compression-optimization methods.
 
 I hope to make ML and DL effortlessly accessible in everyone's daily life.
 

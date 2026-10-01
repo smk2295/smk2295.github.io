@@ -1,0 +1,31 @@
+{% if site.latest_posts.limit %}
+  {% assign latest_posts_limit = site.latest_posts.limit %}
+{% else %}
+  {% assign latest_posts_limit = site.posts.size %}
+{% endif %}
+{% if site.posts.size > 0 %}
+  <div class="home-posts">
+    {% for item in site.posts limit: latest_posts_limit %}
+      {% if item.redirect == blank %}
+        {% assign item_url = item.url | relative_url %}
+      {% elsif item.redirect contains '://' %}
+        {% assign item_url = item.redirect %}
+      {% else %}
+        {% assign item_url = item.redirect | relative_url %}
+      {% endif %}
+      <a class="home-post" href="{{ item_url }}">
+        <span class="home-post-meta">
+          {% if item.series %}<span class="home-post-series">{{ item.series }}</span>{% endif %}
+          <time datetime="{{ item.date | date_to_xmlschema }}">{{ item.date | date: '%b %-d, %Y' }}</time>
+        </span>
+        <span class="home-post-title">{{ item.title }}</span>
+        {% if item.description %}
+          <span class="home-post-desc">{{ item.description }}</span>
+        {% endif %}
+        <span class="home-post-cta">Read →</span>
+      </a>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No posts so far...</p>
+{% endif %}

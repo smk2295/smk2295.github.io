@@ -89,7 +89,7 @@
 
         {%- if forloop.length > 1 -%}
           {% if forloop.first == false %},&nbsp;{% endif %}
-          {%- if forloop.last and author_array_limit == author_array_size %}and&nbsp;{% endif -%}
+          {%- if forloop.last and author_array_limit == author_array_size and author.last != '...' %}and&nbsp;{% endif -%}
         {% endif %}
         {%- if author_is_self -%}
           <em>
@@ -186,9 +186,11 @@
     {% endif %}
     {% assign entrytype_text = entrytype | strip_html | strip %}
     {% capture periodical %}{{ entrytype }}{% if entry.award_name %} <em><span style="color:red;">{{ entry.award_name }}</span></em>{% endif %}{% if entrytype_text != "" and entryyear != "" %}, {% endif %}{{ entrymonth }}{{ entryyear }}{% endcapture %}
-    <div class="periodical">
-      {{ periodical | strip }}
-    </div>
+    {% if entrytype_text != "" %}
+      <div class="periodical">
+        {{ periodical | strip }}
+      </div>
+    {% endif %}
     <div class="periodical">
       {% if entry.note %}
         {{ entry.note | strip }}
